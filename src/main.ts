@@ -16,6 +16,6 @@ export function createStore<T = any>(data: T) {
       return pubSub.subscribe(`${storeId}`, setState);
     }, []);
 
-    return [state, updateData];
+    return [state, updateData] as const;
   };
 }
