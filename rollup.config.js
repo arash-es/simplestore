@@ -4,6 +4,9 @@ import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
 import external from "rollup-plugin-peer-deps-external";
 import dts from "rollup-plugin-dts";
+import { babel } from "@rollup/plugin-babel";
+import * as path from "path";
+
 
 const packageJson = require("./package.json");
 
@@ -23,7 +26,17 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [external(), resolve(), commonjs(), typescript({ tsconfig: "./tsconfig.json" }), terser()],
+    plugins: [
+      external(),
+      resolve({ browser: true }),
+      commonjs(),
+      babel({
+        babelHelpers: "bundled",
+        configFile: path.resolve(__dirname, ".babelrc.js"),
+      }),
+      typescript({ tsconfig: "./tsconfig.json" }),
+      terser(),
+    ],
   },
   {
     input: "dist/esm/index.d.ts",
