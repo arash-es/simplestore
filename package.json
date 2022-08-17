@@ -5,6 +5,12 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "private": false,
   "scripts": {
     "prebuild": "rm -rf dist",
     "rollup-watch": "rollup -c -w",
