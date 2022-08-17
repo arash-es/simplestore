@@ -11,7 +11,8 @@
     "build": "npm run prebuild && rollup -c"
   },
   "peerDependencies": {
-    "react": ">=16.8"
+    "react": ">=16.8",
+    "react-dom": ">=16.8"
   },
   "author": "arashray",
   "license": "ISC",
