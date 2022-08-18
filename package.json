@@ -21,7 +21,14 @@
     "react-dom": ">=16.8"
   },
   "author": "arash-es",
-  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arash-es/simplestore.git"
+  },
+  "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
