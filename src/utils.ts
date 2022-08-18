@@ -1,12 +1,17 @@
 export class PubSub extends EventTarget {
-  publish(eventName: string, data: any) {
-    this.dispatchEvent(new CustomEvent(eventName, { detail: data }));
+  private static lastChannelId: number = 0;
+  private channelId: string;
+  constructor() {
+    super();
+    this.channelId = `${PubSub.lastChannelId++}`;
+    console.log(PubSub.lastChannelId);
   }
-  subscribe(eventName: string, cb: (data: any) => void) {
-    const handler = (event: any) => cb(event.detail);
-    this.addEventListener(eventName, handler);
-    return () => {
-      this.removeEventListener(eventName, handler);
-    };
+  publish(data: any) {
+    this.dispatchEvent(new CustomEvent(this.channelId, { detail: data }));
+  }
+  subscribe(cb: (data: any) => void) {
+    const handler = ((event: CustomEvent) => cb(event.detail)) as EventListener;
+    this.addEventListener(this.channelId, handler);
+    return () => this.removeEventListener(this.channelId, handler);
   }
 }

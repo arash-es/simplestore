@@ -1,21 +1,15 @@
 import { PubSub } from "./utils";
 import { useEffect, useState } from "react";
 
-let lastId = 0;
 export function createStore<T = any>(data: T) {
-  const pubSub = new PubSub();
-  const storeId = lastId++;
+  const channel = new PubSub();
   const updateData = (newData: T) => {
     data = newData;
-    pubSub.publish(`${storeId}`, newData);
+    channel.publish(newData);
   };
-
   return () => {
     const [state, setState] = useState<T>(data);
-    useEffect(() => {
-      return pubSub.subscribe(`${storeId}`, setState);
-    }, []);
-
+    useEffect(() => channel.subscribe(setState), []);
     return [state, updateData] as const;
   };
 }
