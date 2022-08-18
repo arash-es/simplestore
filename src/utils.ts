@@ -4,7 +4,6 @@ export class PubSub extends EventTarget {
   constructor() {
     super();
     this.channelId = `${PubSub.lastChannelId++}`;
-    console.log(PubSub.lastChannelId);
   }
   publish(data: any) {
     this.dispatchEvent(new CustomEvent(this.channelId, { detail: data }));
