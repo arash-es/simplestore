@@ -1,18 +1,34 @@
-import { PubSub } from "./utils";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { isFunction, PubSub } from "./utils";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
-const isFunction = (inp: unknown): inp is Function => typeof inp === "function";
-
-export function createStore<T = any>(data: T) {
-  const channel = new PubSub();
-  const updateData: Dispatch<SetStateAction<T>> = (setStateAction) => {
+function createStore<T = any>(data: T) {
+  const channel = new PubSub<T>();
+  const dispatch: Dispatch<SetStateAction<T>> = (setStateAction) => {
     const newData: T = isFunction(setStateAction) ? setStateAction(data) : setStateAction;
     data = newData;
     channel.publish(newData);
   };
-  return () => {
-    const [state, setState] = useState<T>(data);
-    useEffect(() => channel.subscribe(setState), []);
-    return [state, updateData] as const;
+
+  const useStore = <G = T>(getState: (state: T) => G) => {
+    const [state, setState] = useState(() => getState(data));
+    const stateRef = useRef(state);
+
+    const updateData = (newState: ReturnType<typeof getState>) => {
+      stateRef.current = newState;
+      setState(newState);
+    };
+
+    const onStoreUpdate = (storeNewState: T) => {
+      const newState = getState(storeNewState);
+      if (newState !== stateRef.current) {
+        updateData(newState);
+      }
+    };
+
+    useEffect(() => channel.subscribe(onStoreUpdate), []);
+    return state;
   };
+  return { dispatch, useStore };
 }
+
+export { createStore };
